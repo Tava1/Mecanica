@@ -1,6 +1,5 @@
-package com.dragsters.interfaces;
+package mecanica.interfaces;
 
-import com.dragsters.model.Cargo;
 import java.util.ArrayList;
 
 /**
