@@ -1,5 +1,6 @@
 package mecanica.model;
 
+import java.sql.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Cliente {
-
+public class Cliente extends Pessoa {
+    private int IdCliente;
+    private Date dataCadastro;
 }

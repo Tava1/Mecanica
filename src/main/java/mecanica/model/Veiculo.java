@@ -18,29 +18,17 @@ public class Veiculo {
     private int ano;
     private TipoVeiculo tipoVeiculo;
     private int idCliente;
-    
+
     public Veiculo() {
-        
     }
-    
-    public Veiculo (int idVeiculo, String modelo, String marca, int ano, TipoVeiculo tipoVeiculo, int idCliente) {
-        
-    }
-    
-    @Override
-    public String toString() {
-        return String.format("idVeiculo %s <br/> "
-                + "modelo %s <br/> "
-                + "marca %s <br/> "
-                + "ano %s <br/> "
-                + "tipoVeiculo %s <br/> "
-                + "idCliente %s <br/> ",
-                this.getIdVeiculo(),
-                this.getModelo(),
-                this.getMarca(),
-                this.getAno(),
-                this.getTipoVeiculo(),
-                this.getIdCliente());
+
+    public Veiculo(int idVeiculo, String modelo, String marca, int ano, TipoVeiculo tipoVeiculo, int idCliente) {
+        this.idVeiculo = idVeiculo;
+        this.modelo = modelo;
+        this.marca = marca;
+        this.ano = ano;
+        this.tipoVeiculo = tipoVeiculo;
+        this.idCliente = idCliente;
     }
 }
 
