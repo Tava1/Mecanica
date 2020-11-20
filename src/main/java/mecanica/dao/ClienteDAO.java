@@ -15,7 +15,7 @@ import mecanica.utils.ConexaoDados;
 public class ClienteDAO implements IInteracaoDAO<Cliente>{
     
     @Override
-    public boolean criar(Cliente cliente) {
+    public String criar(Cliente cliente) {
         PreparedStatement ps = null;
         
         try {
@@ -30,12 +30,12 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             int linhasAfetadas = ps.executeUpdate();
             
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Não foi possível cadastrar um novo cliente.";
             }
         
         } 
         catch (Exception e) {
-            return false;
+            return e.getMessage();
         }
         finally {
             try {
@@ -44,10 +44,11 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
                 }
             } 
             catch (Exception e) {
+                return e.getMessage();
             }
         }
         
-        return true;
+        return "Cliente cadastrado com sucesso.";
     }
     
     @Override
@@ -75,6 +76,7 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             }
         } 
         catch (Exception e) {
+            return null;
         }
         finally {
             try {
@@ -90,7 +92,7 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
     }
     
     @Override
-    public boolean atualizar(Cliente cliente) {
+    public String atualizar(Cliente cliente) {
         PreparedStatement ps = null;
 
         try {
@@ -107,12 +109,12 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             int linhasAfetadas = ps.executeUpdate();
             
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Este cliente não pode ser alterado.";
             }
         
         } 
         catch (Exception e) {
-            return false;
+            return e.getMessage();
         }
         finally {
             try {
@@ -124,11 +126,11 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             }
         }
         
-        return true;
+        return "Cliente atualizado com sucesso.";
     }
     
     @Override
-    public boolean deletar(int id) {
+    public String deletar(int id) {
 
         PreparedStatement ps = null;
         
@@ -141,12 +143,12 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             int linhasAfetadas = ps.executeUpdate();
             
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Este cliente não pode ser deletado";
             }
         
         } 
         catch (Exception e) {
-            return false;
+            return e.getMessage();
         }
         finally {
             try {
@@ -155,10 +157,11 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
                 }
             } 
             catch (Exception e) {
+                return e.getMessage();
             }
         }
 
-        return true;
+        return "Cliente deletado com sucesso.";
     }
     
 }
