@@ -102,7 +102,7 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             ps.setLong(3, cliente.getTelefone());
             ps.setDate(4, cliente.getDataCadastro());
             // WHERE
-            ps.setInt(13, cliente.getIdCliente());
+            ps.setInt(5, cliente.getIdCliente());
             
             int linhasAfetadas = ps.executeUpdate();
             
