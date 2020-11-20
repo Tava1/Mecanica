@@ -13,9 +13,10 @@ import mecanica.enumeration.TipoVeiculo;
  *
  * @author Gustavo Santos
  */
-public class VeiculoDAO {
+public class VeiculoDAO implements IInteracaoDAO<Veiculo>{
 
-    public boolean criar(Veiculo veiculo) {
+    @Override
+    public String criar(Veiculo veiculo) {
         PreparedStatement ps = null;
 
         try {
@@ -29,23 +30,28 @@ public class VeiculoDAO {
             int linhasAfetadas = ps.executeUpdate();
 
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Não foi possível cadastrar um novo veículo.";
             }
 
-        } catch (Exception e) {
-            return false;
-        } finally {
+        } 
+        catch (Exception e) {
+            return e.getMessage();
+        } 
+        finally {
             try {
                 if (ps != null) {
                     ConexaoDados.fecharConexao();
                 }
-            } catch (Exception e) {
+            } 
+            catch (Exception e) {
+                return e.getMessage();
             }
         }
 
-        return true;
+        return "Veículo cadastrado com sucesso.";
     }
 
+    @Override
     public ArrayList<Veiculo> listar() {
         ArrayList<Veiculo> veiculos = new ArrayList<>();
         PreparedStatement ps = null;
@@ -67,25 +73,31 @@ public class VeiculoDAO {
 
                 veiculos.add(veiculo);
             }
-        } catch (Exception e) {
-        } finally {
+        } 
+        catch (Exception e) {
+            return null;
+        } 
+        finally {
             try {
                 if (ps != null) {
                     ConexaoDados.fecharConexao();
                 }
-            } catch (Exception e) {
+            } 
+            catch (Exception e) {
+                return null;
             }
         }
 
         return veiculos;
     }
-
-    public boolean atualizar(Veiculo veiculo) {
+    
+    @Override
+    public String atualizar(Veiculo veiculo) {
         PreparedStatement ps = null;
 
         try {
             Connection conn = ConexaoDados.abrirConexao();
-            ps = conn.prepareStatement("UPDATE Veiculo SET Modeo = ?, Marca = ?, Ano = ?, WHERE IdVeiculo = ?;");
+            ps = conn.prepareStatement("UPDATE Veiculo SET Modelo = ?, Marca = ?, Ano = ?, WHERE IdVeiculo = ?;");
 
             ps.setString(1, veiculo.getModelo());
             ps.setString(2, veiculo.getMarca());
@@ -96,49 +108,57 @@ public class VeiculoDAO {
             int linhasAfetadas = ps.executeUpdate();
 
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Este veículo não pode ser alterado.";
             }
 
-        } catch (Exception e) {
-            return false;
-        } finally {
+        } 
+        catch (Exception e) {
+            return e.getMessage();
+        } 
+        finally {
             try {
                 if (ps != null) {
                     ConexaoDados.fecharConexao();
                 }
-            } catch (Exception e) {
+            } 
+            catch (Exception e) {
+                return e.getMessage();
             }
         }
 
-        return true;
+        return "Veículo atualizado com sucesso.";
     }
 
-    public boolean deletar(int id) {
+    @Override
+    public String deletar(int id) {
 
         PreparedStatement ps = null;
 
         try {
             Connection conn = ConexaoDados.abrirConexao();
-            ps = conn.prepareStatement("DELETE FROM Cliente WHERE IdVeiculo = ?;");
+            ps = conn.prepareStatement("DELETE FROM Veiculo WHERE IdVeiculo = ?;");
 
             ps.setInt(1, id);
 
             int linhasAfetadas = ps.executeUpdate();
 
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Este Veiculo não pode ser deletado";
             }
 
-        } catch (Exception e) {
-            return false;
-        } finally {
+        } 
+        catch (Exception e) {
+            return e.getMessage();
+        } 
+        finally {
             try {
                 if (ps != null) {
                     ConexaoDados.fecharConexao();
                 }
             } catch (Exception e) {
+                return e.getMessage();
             }
         }
-        return true;
+        return "Veiculo deletado com sucesso.";
     }
 }

@@ -8,8 +8,8 @@ import java.util.ArrayList;
  */
 public interface IInteracaoDAO<T> {
     
-    public boolean criar(T t);
+    public String criar(T t);
     public ArrayList<T> listar();
-    public boolean atualizar(T t);
-    public boolean deletar(int id);
+    public String atualizar(T t);
+    public String deletar(int id);
 }
