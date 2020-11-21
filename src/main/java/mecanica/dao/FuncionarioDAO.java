@@ -16,7 +16,7 @@ import mecanica.interfaces.IInteracaoDAO;
 public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
     
     @Override
-    public boolean criar(Funcionario funcionario) {
+    public String criar(Funcionario funcionario) {
         PreparedStatement ps = null;
         
         try {
@@ -31,12 +31,12 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
             int linhasAfetadas = ps.executeUpdate();
             
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Não foi possível cadastrar um novo funcionario.";
             }
         
         } 
         catch (Exception e) {
-            return false;
+            return e.getMessage();
         }
         finally {
             try {
@@ -45,10 +45,11 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
                 }
             } 
             catch (Exception e) {
+                return e.getMessage();
             }
         }
         
-        return true;
+        return "Funcionario cadastrado com sucesso.";
     }
     
     @Override
@@ -91,7 +92,7 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
     }
     
     @Override
-    public boolean atualizar(Funcionario funcionario) {
+    public String atualizar(Funcionario funcionario) {
         PreparedStatement ps = null;
 
         try {
@@ -109,11 +110,11 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
             int linhasAfetadas = ps.executeUpdate();
             
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Este funcionario não pode ser alterado.";
             }
         } 
         catch (Exception e) {
-            return false;
+            return e.getMessage();
         }
         finally {
             try {
@@ -122,14 +123,15 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
                 }
             } 
             catch (Exception e) {
+                return e.getMessage();
             }
         }
         
-        return true;
+        return "Funcionario atualizado com sucesso.";
     }
     
     @Override
-    public boolean deletar(int id) {
+    public String deletar(int id) {
 
         PreparedStatement ps = null;
         
@@ -142,12 +144,12 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
             int linhasAfetadas = ps.executeUpdate();
             
             if (linhasAfetadas <= 0) {
-                return false;
+                return "Este funcionario não pode ser deletado";
             }
         
         } 
         catch (Exception e) {
-            return false;
+            return e.getMessage();
         }
         finally {
             try {
@@ -156,10 +158,11 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
                 }
             } 
             catch (Exception e) {
+                return e.getMessage();
             }
         }
 
-        return true;
+        return "Funcionario deletado com sucesso.";
     }
     
 }

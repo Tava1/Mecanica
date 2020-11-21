@@ -20,5 +20,4 @@ public class Orcamento {
     private StatusOrcamento status;
     private int idClinte;
     private int idFuncionario;
-    
 }
