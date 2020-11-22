@@ -6,6 +6,7 @@ import lombok.Setter;
 /**
  *
  * @author Gustavo Santos
+ * @author Victor Vilela
  */
 
 @Getter
@@ -16,4 +17,17 @@ public class DetalheOrcamento {
     private int quantidade;
     private double precoUnitario;
     private int idOrcamento;
+    
+    
+    public DetalheOrcamento() {
+
+    }
+
+    public DetalheOrcamento(int idDetalheOrcamento, String descricao, int quantidade, double precoUnitario, int idOrcamento) {
+        this.idDetalheOrcamento = idDetalheOrcamento;
+        this.descricao = descricao;
+        this.quantidade = quantidade;
+        this.precoUnitario = precoUnitario;
+        this.idOrcamento = idOrcamento;
+    }
 }

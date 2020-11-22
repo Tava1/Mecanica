@@ -4,9 +4,17 @@
         <servlet-name>ClienteController</servlet-name>
         <servlet-class>mecanica.model.servlet.ClienteController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OrcamentoController</servlet-name>
+        <servlet-class>mecanica.controller.OrcamentoController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ClienteController</servlet-name>
         <url-pattern>/ClienteController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrcamentoController</servlet-name>
+        <url-pattern>/OrcamentoController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -14,4 +22,3 @@
         </session-timeout>
     </session-config>
 </web-app>
-
