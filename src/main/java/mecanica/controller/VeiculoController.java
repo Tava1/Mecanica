@@ -6,6 +6,7 @@
 package mecanica.controller;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -48,6 +49,7 @@ public class VeiculoController extends HttpServlet {
             throws ServletException, IOException {
 
         Veiculo veiculo = new Veiculo();
+        Enumeration en = request.getParameterNames();
 
         veiculo.setModelo(request.getParameter("modelo"));
         veiculo.setMarca(request.getParameter("marca"));
