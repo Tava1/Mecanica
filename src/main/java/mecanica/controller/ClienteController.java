@@ -1,88 +1,157 @@
 package mecanica.controller;
 
+import com.google.gson.Gson;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mecanica.dao.ClienteDAO;
 import mecanica.model.Cliente;
-import mecanica.utils.ObterData;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
  * @author Gustavo Santos
  */
+
+@WebServlet(name = "ClienteController", urlPatterns = "/ClienteController")
 public class ClienteController extends HttpServlet {
 
     private ClienteDAO clienteDAO = new ClienteDAO();
+    private Gson gson = new Gson();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        List<Cliente> listaClientes = this.clienteDAO.listar();
         
-        String action = request.getParameter("action");
-        
-        // Verificar ação para deletar cliente
-        if(action.equalsIgnoreCase("delete")){
-            int id = Integer.parseInt(request.getParameter("IdCliente"));
-            clienteDAO.deletar(id); 
-        }
-        
-        List<Cliente> listaClientes = clienteDAO.listar();
-        
-        request.setAttribute("listaClientes", listaClientes);
-        response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher view = getServletContext().getRequestDispatcher("/clientes.jsp");
-        view.forward(request, response);
+        String jsonString = this.gson.toJson(listaClientes);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonString);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        Date date = new Date();
-        
-        //date = ObterData.ObterDataHora();
-        Cliente cliente = new Cliente();
 
-        if(date != null) {
-            cliente.setNome(request.getParameter("nome"));
-            cliente.setCpf(request.getParameter("cpf"));
-            cliente.setTelefone(Long.parseLong(request.getParameter("telefone")));
-            cliente.setDataCadastro(new java.sql.Date(date.getTime()));
-            
-        }
+        JSONObject jsonCliente = lerJsonObj(request);
         
+        Cliente cliente = new Cliente();
+        Date date = new Date();
+
+        // Preencher o objeto cliente lendo a respectiva propriedade do JSON
+        cliente.setNome(jsonCliente.getString("nome"));
+        cliente.setCpf(jsonCliente.getString("cpf"));
+        cliente.setTelefone(Long.parseLong(jsonCliente.getString("telefone")));
+        cliente.setDataCadastro(new java.sql.Date(date.getTime()));
+        
+        String retorno = "";
+
         try {
-            clienteDAO.criar(cliente);
+            retorno = clienteDAO.criar(cliente);
         } 
         catch (Exception e) {
+            retorno = e.getMessage();
         }
         
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonString = this.gson.toJson(retorno);
+        response.getWriter().write(jsonString);
     }
     
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
+        JSONObject jsonCliente = lerJsonObj(request);
         Cliente cliente = new Cliente();
-        
-        cliente.setIdCliente(Integer.parseInt(request.getParameter(("IdCliente"))));
-        SimpleDateFormat formatador = new SimpleDateFormat("yyyy-MM-dd");
-         
+        String retorno = "";
+
         try {
-            cliente.setDataCadastro(new java.sql.Date(formatador.parse(request.getParameter("dataCadastro")).getTime()));
-            clienteDAO.atualizar(cliente);
+
+            // Preencher o objeto cliente lendo a respectiva propriedade do JSON
+            cliente.setIdCliente(jsonCliente.getInt("id"));
+            cliente.setNome(jsonCliente.getString("nome"));
+            cliente.setCpf(jsonCliente.getString("cpf"));
+            cliente.setTelefone(Long.parseLong(jsonCliente.getString("telefone")));
+        
+            retorno = clienteDAO.atualizar(cliente);
         } 
         catch (Exception e) {
+            retorno = e.getMessage();
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonString = this.gson.toJson(retorno);
+        response.getWriter().write(jsonString);
+    }
+    
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String retorno = "";
+
+        try {
+            int id = Integer.parseInt(request.getParameter("IdCliente"));
+            retorno = clienteDAO.deletar(id);
+        } 
+        catch (Exception e) {
+            retorno = e.getMessage();
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonString = this.gson.toJson(retorno);
+        response.getWriter().write(jsonString);
+    }
+
+    public static JSONArray lerJsonArray(String nomeArray, HttpServletRequest request) {
+        try {
+            // Ler o JSON
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            JSONArray arr = json.getJSONArray(nomeArray);
+            return arr;
+        } 
+        catch (Exception e) {
+            return null;
         }
     }
     
-    
+    public static JSONObject lerJsonObj(HttpServletRequest request) {
+        try {
+            // Ler o JSON
+            StringBuilder sb = new StringBuilder();
+            String line = null;
 
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            return json;
+        } 
+        catch (Exception e) {
+            return null;
+        }
+    }
 }
