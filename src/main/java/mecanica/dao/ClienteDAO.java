@@ -97,7 +97,7 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
 
         try {
             Connection conn = ConexaoDados.abrirConexao();
-            ps = conn.prepareStatement("UPDATE Cliente SET Nome = ?, CPF = ?, Telefone = ?, DataCadastro = ? WHERE IdCliente = ?;");
+            ps = conn.prepareStatement("UPDATE Cliente SET Nome = ?, CPF = ?, Telefone = ? WHERE IdCliente = ?;");
             
             ps.setString(1, cliente.getNome());
             ps.setString(2, cliente.getCpf());

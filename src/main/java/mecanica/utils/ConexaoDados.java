@@ -14,7 +14,7 @@ public class ConexaoDados {
     static String SERVER = "localhost";
     static String DATABASE = "mecanica";              
     static String LOGIN = "root";                           
-    static String SENHA = "";                         
+    static String SENHA = "me1234";                         
     static String URL = "";
     static Connection CONEXAO;
     
