@@ -1,78 +1,148 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mecanica.controller;
 
+import com.google.gson.Gson;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mecanica.dao.ClienteDAO;
 import mecanica.dao.VeiculoDAO;
 import mecanica.model.Veiculo;
+import mecanica.model.Cliente;
+import org.json.JSONObject;
 
 /**
- *
+ * @author Gustavo Santos
  * @author JHK
  */
+@WebServlet(name = "VeiculoController", urlPatterns = "/VeiculoController")
 public class VeiculoController extends HttpServlet {
 
     private VeiculoDAO veiculoDAO = new VeiculoDAO();
-
+    private ClienteDAO clienteDAO = new ClienteDAO();
+    private Gson gson = new Gson();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String action = request.getParameter("action");
-
-        //verificando ação para deletar veiculo
-        if (action.equalsIgnoreCase("delete")) {
-            int id = Integer.parseInt(request.getParameter("IdVeiculo"));
-            veiculoDAO.deletar(id);
-        }
-
-        List<Veiculo> listaVeiculos = veiculoDAO.listar();
-
-        request.setAttribute("listaVeiculos", listaVeiculos);
-        response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher view = getServletContext().getRequestDispatcher("/veiculos.jsp");
-        view.forward(request, response);
+        List<Veiculo> listaVeiculos = this.veiculoDAO.listar();
+        
+        String jsonString = this.gson.toJson(listaVeiculos);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonString);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        JSONObject jsonVeiculo = lerJsonObj(request);
+        
         Veiculo veiculo = new Veiculo();
-        Enumeration en = request.getParameterNames();
-
-        veiculo.setModelo(request.getParameter("modelo"));
-        veiculo.setMarca(request.getParameter("marca"));
-        veiculo.setAno(Integer.parseInt(request.getParameter("ano")));
-        //veiculo.setTipoVeiculo(request.getParameterNames());
-        veiculo.setIdCliente(Integer.parseInt(request.getParameter("IdCliente")));
-
+        Date date = new Date();
+        String retorno = "";
+        
         try {
-            veiculoDAO.criar(veiculo);
-        } catch (Exception e) {
-        }
-    }
+            String cpf = jsonVeiculo.getString("cpfCliente");
 
+            // Buscar cliente pelo CPF
+            Cliente cliente = clienteDAO.buscarCPF(cpf);
+
+            if (cliente != null) {
+                veiculo.setMarca(jsonVeiculo.getString("marca"));
+                veiculo.setModelo(jsonVeiculo.getString("modelo"));
+                veiculo.setAno(Integer.parseInt(jsonVeiculo.getString("ano")));
+                //veiculo.setTipoVeiculo(jsonFuncionario.getString("tipoVeiculo"));
+                veiculo.setIdCliente(cliente.getIdCliente());
+
+                retorno = veiculoDAO.criar(veiculo);
+            }
+        } 
+        catch (Exception e) {
+            retorno = e.getMessage();
+        }
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonString = this.gson.toJson(retorno);
+        response.getWriter().write(jsonString);
+    }
+    
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        JSONObject jsonVeiculo = lerJsonObj(request);
         Veiculo veiculo = new Veiculo();
-        veiculo.setIdVeiculo(Integer.parseInt(request.getParameter("IdVeiculo")));
+        String retorno = "";
 
         try {
-            veiculoDAO.atualizar(veiculo);
-        } catch (Exception e) {
+
+            veiculo.setIdVeiculo(jsonVeiculo.getInt("id"));
+            veiculo.setMarca(jsonVeiculo.getString("marca"));
+            veiculo.setModelo(jsonVeiculo.getString("modelo"));
+            veiculo.setAno(jsonVeiculo.getInt("ano"));
+            //veiculo.setTipoVeiculo(jsonVeiculo.getString("cargo"));
+            veiculo.setIdCliente(jsonVeiculo.getInt("idCliente"));
+
+            retorno = veiculoDAO.atualizar(veiculo);
+        } 
+        catch (Exception e) {
+            retorno = e.getMessage();
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonString = this.gson.toJson(retorno);
+        response.getWriter().write(jsonString);
+    }
+    
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String retorno = "";
+
+        try {
+            int id = Integer.parseInt(request.getParameter("idVeiculo"));
+            retorno = veiculoDAO.deletar(id);
+        } 
+        catch (Exception e) {
+            retorno = e.getMessage();
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonString = this.gson.toJson(retorno);
+        response.getWriter().write(jsonString);
+    }
+
+    public static JSONObject lerJsonObj(HttpServletRequest request) {
+        try {
+            // Ler o JSON
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            return json;
+        } 
+        catch (Exception e) {
+            return null;
         }
     }
 }
+

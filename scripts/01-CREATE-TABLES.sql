@@ -1,0 +1,50 @@
+DROP DATABASE IF EXISTS mecanica;
+CREATE DATABASE IF NOT EXISTS mecanica;
+USE mecanica;
+
+CREATE TABLE Funcionario (
+IdFuncionario INT PRIMARY KEY AUTO_INCREMENT,
+Nome VARCHAR(60) NOT NULL,
+CPF CHAR(11) NOT NULL UNIQUE,
+Telefone VARCHAR(11) NOT NULL,
+Cargo VARCHAR(40)
+);
+
+CREATE TABLE Cliente (
+IdCliente INT PRIMARY KEY AUTO_INCREMENT,
+Nome VARCHAR(60) NOT NULL,
+CPF CHAR(11) NOT NULL UNIQUE,
+Telefone VARCHAR(11) NOT NULL,
+DataCadastro DATE
+);
+
+CREATE TABLE Veiculo (
+IdVeiculo INT PRIMARY KEY AUTO_INCREMENT,
+Marca  VARCHAR(60) NOT NULL,
+Modelo VARCHAR(60) NOT NULL,
+Ano CHAR(4) NOT NULL,
+TipoVeiculo VARCHAR(30),
+IdCliente INT NOT NULL,
+FOREIGN KEY (IdCliente) REFERENCES Cliente (IdCliente)
+);
+
+CREATE TABLE Orcamento (
+IdOrcamento INT PRIMARY KEY AUTO_INCREMENT,
+DataOrcamento DATE NOT NULL,
+TotalPecas DECIMAL(10,2) NOT NULL,
+TotalMaoObra DECIMAL(10,2) NOT NULL,
+Status VARCHAR(20),
+IdCliente INT NOT NULL,
+IdFuncionario INT NOT NULL,
+FOREIGN KEY (IdCliente) REFERENCES Cliente (IdCliente),
+FOREIGN KEY (IdFuncionario) REFERENCES Funcionario (IdFuncionario)
+);
+
+CREATE TABLE DetalheOrcamento (
+IdDetalheOrcamento INT PRIMARY KEY AUTO_INCREMENT,
+Descricao VARCHAR(120) NOT NULL,
+Quantidade INT,
+PrecoUnitario DECIMAL(10,2) NOT NULL,
+IdOrcamento INT NOT NULL,
+FOREIGN KEY (IdOrcamento) REFERENCES Orcamento (IdOrcamento)
+);
