@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -65,6 +64,9 @@ public class VeiculoController extends HttpServlet {
                 veiculo.setIdCliente(cliente.getIdCliente());
 
                 retorno = veiculoDAO.criar(veiculo);
+            }
+            else {
+                retorno = "CPF Incorreto ou cliente não possuí cadastro no sistema";
             }
         } 
         catch (Exception e) {
