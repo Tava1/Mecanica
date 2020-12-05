@@ -21,11 +21,13 @@ public class VeiculoDAO implements IInteracaoDAO<Veiculo>{
 
         try {
             Connection conn = ConexaoDados.abrirConexao();
-            ps = conn.prepareStatement("INSERT INTO Veiculo(Modelo, Marca, Ano) VALUES (?, ?, ?);");
-
-            ps.setString(1, veiculo.getModelo());
-            ps.setString(2, veiculo.getMarca());
+            ps = conn.prepareStatement("INSERT INTO Veiculo(Marca, Modelo, Ano, TipoVeiculo, IdCliente) VALUES (?, ?, ?, ?, ?);");
+           
+            ps.setString(1, veiculo.getMarca());
+            ps.setString(2, veiculo.getModelo());
             ps.setLong(3, veiculo.getAno());
+            ps.setString(4, "Tipo");
+            ps.setInt(5, veiculo.getIdCliente());
 
             int linhasAfetadas = ps.executeUpdate();
 

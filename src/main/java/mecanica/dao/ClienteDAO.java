@@ -105,17 +105,17 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
             
             resultSet = ps.executeQuery();
             
-            if (!resultSet.next()) {
+            while (resultSet.next()) {
                 cliente.setIdCliente(resultSet.getInt("IdCliente"));
                 cliente.setNome(resultSet.getString("Nome"));
                 cliente.setCpf(resultSet.getString("CPF"));
                 cliente.setTelefone(resultSet.getLong("Telefone"));
                 cliente.setDataCadastro(resultSet.getDate("DataCadastro"));
             }
-            else {
-                cliente = null;
-                throw new Exception("Cliente não encontrado!");
-            }
+//            else {
+//                cliente = null;
+//                throw new Exception("Cliente não encontrado!");
+//            }
         } 
         catch (Exception e) {
             return null;
