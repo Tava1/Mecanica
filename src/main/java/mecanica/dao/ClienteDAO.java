@@ -91,6 +91,48 @@ public class ClienteDAO implements IInteracaoDAO<Cliente>{
         return clientes;
     }
     
+    // Listar cliente por CPF
+    public Cliente buscarCPF(String CPF) {
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        
+        Cliente cliente = new Cliente();
+        
+        try {
+            Connection conn = ConexaoDados.abrirConexao();
+            ps = conn.prepareStatement("SELECT * FROM Cliente WHERE CPF = ?;");
+            ps.setString(1, CPF);
+            
+            resultSet = ps.executeQuery();
+            
+            if (!resultSet.next()) {
+                cliente.setIdCliente(resultSet.getInt("IdCliente"));
+                cliente.setNome(resultSet.getString("Nome"));
+                cliente.setCpf(resultSet.getString("CPF"));
+                cliente.setTelefone(resultSet.getLong("Telefone"));
+                cliente.setDataCadastro(resultSet.getDate("DataCadastro"));
+            }
+            else {
+                cliente = null;
+                throw new Exception("Cliente não encontrado!");
+            }
+        } 
+        catch (Exception e) {
+            return null;
+        }
+        finally {
+            try {
+                if (ps != null) {
+                    ConexaoDados.fecharConexao();
+                }
+            } 
+            catch (Exception e) {
+                return null;
+            }
+        }
+        return cliente;
+    }
+    
     @Override
     public String atualizar(Cliente cliente) {
         PreparedStatement ps = null;
