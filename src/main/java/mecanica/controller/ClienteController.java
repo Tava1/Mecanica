@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mecanica.dao.ClienteDAO;
 import mecanica.model.Cliente;
+import mecanica.utils.LerJson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -42,7 +43,7 @@ public class ClienteController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        JSONObject jsonCliente = lerJsonObj(request);
+        JSONObject jsonCliente = LerJson.lerJsonObj(request);
         
         Cliente cliente = new Cliente();
         Date date = new Date();
@@ -72,7 +73,7 @@ public class ClienteController extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        JSONObject jsonCliente = lerJsonObj(request);
+        JSONObject jsonCliente = LerJson.lerJsonObj(request);
         Cliente cliente = new Cliente();
         String retorno = "";
 
@@ -114,44 +115,5 @@ public class ClienteController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String jsonString = this.gson.toJson(retorno);
         response.getWriter().write(jsonString);
-    }
-
-    public static JSONArray lerJsonArray(String nomeArray, HttpServletRequest request) {
-        try {
-            // Ler o JSON
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-
-            JSONObject json = new JSONObject(sb.toString());
-            JSONArray arr = json.getJSONArray(nomeArray);
-            return arr;
-        } 
-        catch (Exception e) {
-            return null;
-        }
-    }
-    
-    public static JSONObject lerJsonObj(HttpServletRequest request) {
-        try {
-            // Ler o JSON
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-
-            JSONObject json = new JSONObject(sb.toString());
-            return json;
-        } 
-        catch (Exception e) {
-            return null;
-        }
     }
 }

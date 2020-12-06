@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import mecanica.enumeration.StatusOrcamento;
 import mecanica.interfaces.IInteracaoDAO;
+import mecanica.model.DetalheOrcamento;
 import mecanica.model.Orcamento;
 import mecanica.utils.ConexaoDados;
 
@@ -60,6 +61,45 @@ public class OrcamentoDAO implements IInteracaoDAO<Orcamento>{
         return "Orçamento cadastrado com sucesso.";
     }
 
+    public String criar(Orcamento orcamento, ArrayList<DetalheOrcamento> listaDetalhe) {        
+        PreparedStatement ps = null;
+
+        try {
+            Connection conn = ConexaoDados.abrirConexao();
+            ps = conn.prepareStatement("INSERT INTO Orcamento(idOrcamento, dataOrcamento, totalPecas, totalMaoObra, statusOrcamento, idCliente, idFuncionario) VALUES (?, ?, ?, ?, ?, ?, ?);");
+
+            ps.setInt(1, orcamento.getIdOrcamento());
+            ps.setDate(2, orcamento.getDataOrcamento());
+            ps.setDouble(3, orcamento.getTotalPecas());
+            ps.setDouble(4, orcamento.getTotalMaoObra());
+//            ps.setString(5, orcamento.getStatus());
+            ps.setInt(6, orcamento.getIdCliente());
+            ps.setInt(7, orcamento.getIdFuncionario());
+
+            int linhasAfetadas = ps.executeUpdate();
+
+            if (linhasAfetadas <= 0) {
+                return "Não foi possível cadastrar um novo veículo.";
+            }
+
+        } 
+        catch (Exception e) {
+            return e.getMessage();
+        } 
+        finally {
+            try {
+                if (ps != null) {
+                    ConexaoDados.fecharConexao();
+                }
+            } 
+            catch (Exception e) {
+                return e.getMessage();
+            }
+        }
+
+        return "Orçamento cadastrado com sucesso.";
+    }
+    
     @Override
     public ArrayList<Orcamento> listar() {
         ArrayList<Orcamento> listaOrc = new ArrayList<>();

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mecanica.dao.FuncionarioDAO;
 import mecanica.model.Funcionario;
+import mecanica.utils.LerJson;
 import org.json.JSONObject;
 
 /**
@@ -40,7 +41,7 @@ public class FuncionarioController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        JSONObject jsonFuncionario = lerJsonObj(request);
+        JSONObject jsonFuncionario = LerJson.lerJsonObj(request);
         
         Funcionario funcionario = new Funcionario();
         Date date = new Date();
@@ -69,7 +70,7 @@ public class FuncionarioController extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        JSONObject jsonFuncionario = lerJsonObj(request);
+        JSONObject jsonFuncionario = LerJson.lerJsonObj(request);
         Funcionario funcionario = new Funcionario();
         String retorno = "";
 
@@ -113,22 +114,4 @@ public class FuncionarioController extends HttpServlet {
         response.getWriter().write(jsonString);
     }
 
-    public static JSONObject lerJsonObj(HttpServletRequest request) {
-        try {
-            // Ler o JSON
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-
-            JSONObject json = new JSONObject(sb.toString());
-            return json;
-        } 
-        catch (Exception e) {
-            return null;
-        }
-    }
 }

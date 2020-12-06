@@ -165,4 +165,46 @@ public class FuncionarioDAO implements IInteracaoDAO<Funcionario>{
         return "Funcionario deletado com sucesso.";
     }
     
+    // Listar cliente por CPF
+    public Funcionario buscarCPF(String CPF) {
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        
+        Funcionario funcionario = new Funcionario();
+        
+        try {
+            Connection conn = ConexaoDados.abrirConexao();
+            ps = conn.prepareStatement("SELECT * FROM Funcionario WHERE CPF = ?;");
+            ps.setString(1, CPF);
+            
+            resultSet = ps.executeQuery();
+            
+            while (resultSet.next()) {
+                funcionario.setIdFuncionario(resultSet.getInt("IdFuncionario"));
+                funcionario.setNome(resultSet.getString("Nome"));
+                funcionario.setCpf(resultSet.getString("CPF"));
+                funcionario.setTelefone(resultSet.getLong("Telefone"));
+                funcionario.setCargo(resultSet.getString("Cargo"));
+            }
+//            else {
+//                cliente = null;
+//                throw new Exception("Cliente não encontrado!");
+//            }
+        } 
+        catch (Exception e) {
+            return null;
+        }
+        finally {
+            try {
+                if (ps != null) {
+                    ConexaoDados.fecharConexao();
+                }
+            } 
+            catch (Exception e) {
+                return null;
+            }
+        }
+        return funcionario;
+    }
+    
 }
