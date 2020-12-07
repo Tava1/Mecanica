@@ -142,7 +142,7 @@ public class OrcamentoDAO implements IInteracaoDAO<Orcamento>{
                 orcamento.setDataOrcamento(resultSet.getDate("DataOrcamento"));
                 orcamento.setTotalPecas(resultSet.getDouble("TotalPecas"));
                 orcamento.setTotalMaoObra(resultSet.getDouble("TotalMaoObra"));
-                orcamento.setStatus(StatusOrcamento.Iniciado);
+                orcamento.setStatus(StatusOrcamento.Finalizado);
                 orcamento.setIdCliente(resultSet.getInt("IdCliente"));
                 orcamento.setIdFuncionario(resultSet.getInt("IdFuncionario"));
 

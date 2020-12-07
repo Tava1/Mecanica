@@ -37,21 +37,14 @@ public class OrcamentoController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String action = request.getParameter("action");
-
-        // Verificar ação para deletar orcamento
-        if (action.equalsIgnoreCase("delete")) {
-            int id = Integer.parseInt(request.getParameter("idOrcamento"));
-            orcamentoDAO.deletar(id);
-        }
-
-        List<Orcamento> listaOrcamento = orcamentoDAO.listar();
-
-        request.setAttribute("listaOrcamento", listaOrcamento);
-        response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher view = getServletContext().getRequestDispatcher("/orcamentos.jsp");
-        view.forward(request, response);
+        List<Orcamento> listaOrcamentos = this.orcamentoDAO.listar();
+        
+        String jsonString = this.gson.toJson(listaOrcamentos);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonString);
     }
+
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
