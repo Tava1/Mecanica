@@ -18,6 +18,7 @@ import mecanica.model.Cliente;
 import mecanica.model.DetalheOrcamento;
 import mecanica.model.Funcionario;
 import mecanica.model.Orcamento;
+import mecanica.model.RelatorioOrcamento;
 import mecanica.utils.LerJson;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,9 +38,9 @@ public class OrcamentoController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<Orcamento> listaOrcamentos = this.orcamentoDAO.listar();
+        List<RelatorioOrcamento> listaRelatorio = this.orcamentoDAO.listarOrcamentoRelatorio();
         
-        String jsonString = this.gson.toJson(listaOrcamentos);
+        String jsonString = this.gson.toJson(listaRelatorio);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonString);
