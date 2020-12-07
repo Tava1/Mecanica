@@ -14,6 +14,7 @@ import mecanica.enumeration.StatusOrcamento;
 import mecanica.interfaces.IInteracaoDAO;
 import mecanica.model.DetalheOrcamento;
 import mecanica.model.Orcamento;
+import mecanica.model.RelatorioOrcamento;
 import mecanica.utils.ConexaoDados;
 
 /**
@@ -165,6 +166,48 @@ public class OrcamentoDAO implements IInteracaoDAO<Orcamento>{
         return listaOrc;
     }
 
+    public ArrayList<RelatorioOrcamento> listarOrcamentoRelatorio() {
+        ArrayList<RelatorioOrcamento> relatorio = new ArrayList<>();
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+
+        try {
+            Connection conn = ConexaoDados.abrirConexao();
+            ps = conn.prepareStatement("SELECT Orcamento.IdOrcamento, Orcamento.DataOrcamento, Orcamento.Status, Cliente.Nome as NomeCliente, Cliente.CPF as CPFCliente, Funcionario.Nome as NomeFuncionario FROM Orcamento INNER JOIN Cliente ON Cliente.IdCliente = Orcamento.IdCliente INNER JOIN Funcionario ON Funcionario.IdFuncionario = Orcamento.IdFuncionario;");
+
+            resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                RelatorioOrcamento relatorioOrcamento = new RelatorioOrcamento();
+                
+                relatorioOrcamento.setIdOrcamento(resultSet.getInt("IdOrcamento"));
+                relatorioOrcamento.setDataOrcamento(resultSet.getDate("DataOrcamento"));
+                relatorioOrcamento.setStatus(StatusOrcamento.Finalizado);
+                relatorioOrcamento.setNomeCliente(resultSet.getString("NomeCliente"));
+                relatorioOrcamento.setCpfCliente(resultSet.getString("CPFCliente"));
+                relatorioOrcamento.setNomeFuncionario(resultSet.getString("NomeFuncionario"));
+               
+                relatorio.add(relatorioOrcamento);
+            }
+        } 
+        catch (Exception e) {
+            return null;
+        } 
+        finally {
+            try {
+                if (ps != null) {
+                    ConexaoDados.fecharConexao();
+                }
+            } 
+            catch (Exception e) {
+                return null;
+            }
+        }
+        return relatorio;
+    }
+    
+    
+    
     @Override
     public String atualizar(Orcamento orcamento) {
         PreparedStatement ps = null;
