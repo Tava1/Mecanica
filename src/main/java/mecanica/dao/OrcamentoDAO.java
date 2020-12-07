@@ -8,6 +8,7 @@ package mecanica.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import mecanica.enumeration.StatusOrcamento;
 import mecanica.interfaces.IInteracaoDAO;
@@ -66,13 +67,13 @@ public class OrcamentoDAO implements IInteracaoDAO<Orcamento>{
 
         try {
             Connection conn = ConexaoDados.abrirConexao();
-            ps = conn.prepareStatement("INSERT INTO Orcamento(idOrcamento, dataOrcamento, totalPecas, totalMaoObra, statusOrcamento, idCliente, idFuncionario) VALUES (?, ?, ?, ?, ?, ?, ?);");
+            ps = conn.prepareStatement("INSERT INTO Orcamento(IdOrcamento, DataOrcamento, TotalPecas, TotalMaoObra, Status, IdCliente, IdFuncionario) VALUES (?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
 
             ps.setInt(1, orcamento.getIdOrcamento());
             ps.setDate(2, orcamento.getDataOrcamento());
             ps.setDouble(3, orcamento.getTotalPecas());
             ps.setDouble(4, orcamento.getTotalMaoObra());
-//            ps.setString(5, orcamento.getStatus());
+            ps.setString(5, StatusOrcamento.Finalizado.toString());
             ps.setInt(6, orcamento.getIdCliente());
             ps.setInt(7, orcamento.getIdFuncionario());
 
@@ -82,6 +83,28 @@ public class OrcamentoDAO implements IInteracaoDAO<Orcamento>{
                 return "Não foi possível cadastrar um novo veículo.";
             }
 
+            ResultSet rs = ps.getGeneratedKeys();
+            int idOrcamento = 0;
+            
+            if (rs.next()) {
+                idOrcamento = rs.getInt(1);
+            }
+            
+            for (DetalheOrcamento item : listaDetalhe) {
+                ps = conn.prepareStatement("INSERT INTO DetalheOrcamento(Descricao, Quantidade, PrecoUnitario, IdOrcamento) VALUES (?, ?, ?, ?)");
+                
+                ps.setString(1, item.getDescricao());
+                ps.setInt(2, item.getQuantidade());
+                ps.setDouble(3, item.getPrecoUnitario());
+                ps.setInt(4, idOrcamento);
+
+                int linhasAfetadasDetalheOrcamento = ps.executeUpdate();
+                
+                if (linhasAfetadasDetalheOrcamento <= 0) {
+                    return "Não foi possível gerar a venda.";
+                }
+            }
+            
         } 
         catch (Exception e) {
             return e.getMessage();

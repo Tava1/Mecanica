@@ -58,7 +58,7 @@ public class OrcamentoController extends HttpServlet {
             throws ServletException, IOException {
 
         JSONObject jsonOrcamento = LerJson.lerJsonObj(request);
-        JSONArray jsonDetalheOrcamento = jsonOrcamento.getJSONArray("detalhe");
+        //JSONArray jsonDetalheOrcamento = jsonOrcamento.getJSONArray("detalhe");
         
         Date date = new Date();
         String retorno = "";
@@ -82,18 +82,28 @@ public class OrcamentoController extends HttpServlet {
                 ArrayList<DetalheOrcamento> listaDetalheOrcamento = new ArrayList<>();
                 
                 // Obtem por meio do JSON o detalhamento dos itens cadastrado no orçamento 
-                for (int i = 0; i < jsonDetalheOrcamento.length(); i++) {
-                    DetalheOrcamento detalheOrcamento = new DetalheOrcamento();
-                    String descricao = jsonDetalheOrcamento.getJSONObject(i).getString("descricao");
-                    int quantidade = jsonDetalheOrcamento.getJSONObject(i).getInt("quantidade");
-                    double precoUnitario = jsonDetalheOrcamento.getJSONObject(i).getDouble("precoUnitario");
+//                for (int i = 0; i < jsonDetalheOrcamento.length(); i++) {
+//                    DetalheOrcamento detalheOrcamento = new DetalheOrcamento();
+//                    String descricao = jsonDetalheOrcamento.getJSONObject(i).getString("descricao");
+//                    int quantidade = jsonDetalheOrcamento.getJSONObject(i).getInt("quantidade");
+//                    double precoUnitario = jsonDetalheOrcamento.getJSONObject(i).getDouble("precoUnitario");
+//
+//                    detalheOrcamento.setDescricao(descricao);
+//                    detalheOrcamento.setQuantidade(quantidade);
+//                    detalheOrcamento.setPrecoUnitario(precoUnitario);
+//                    
+//                    listaDetalheOrcamento.add(detalheOrcamento);
+//                }
+                DetalheOrcamento detalheOrcamento = new DetalheOrcamento();
+                String descricao = jsonOrcamento.getString("descricao");
+                int quantidade = Integer.parseInt(jsonOrcamento.getString("quantidade"));
+                double precoUnitario = Double.parseDouble(jsonOrcamento.getString("precoUnitario"));
 
-                    detalheOrcamento.setDescricao(descricao);
-                    detalheOrcamento.setQuantidade(quantidade);
-                    detalheOrcamento.setPrecoUnitario(precoUnitario);
-                    
-                    listaDetalheOrcamento.add(detalheOrcamento);
-                }
+                detalheOrcamento.setDescricao(descricao);
+                detalheOrcamento.setQuantidade(quantidade);
+                detalheOrcamento.setPrecoUnitario(precoUnitario);
+
+                listaDetalheOrcamento.add(detalheOrcamento);
 
                 retorno = orcamentoDAO.criar(orcamento, listaDetalheOrcamento);
             }
